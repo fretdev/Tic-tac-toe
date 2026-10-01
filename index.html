@@ -4,19 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TIC TAC TOE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <main>
+    <main class="game-container">
         <h1>TIC TAC TOE</h1>
-        <div class="game-container">
             <div class="game-board"></div>
             <div class="game-controls">
-                <input type="text" class="player1">
-                <input type="text" class="player2">
-                <button class="new-game">NEW GAME</button>
-                <button class="reset-game">RESTART GAME</button>
+                <div class="players-inputs">
+                    <label for="player1" class="input-container">
+                        <span class="label-text">Player 1</span>
+                        <input type="text" class="player" id="player1" placeholder="Enter your name">
+                    </label>
+                    <label for="player2" class="input-container">
+                        <span class="label-text">Player 2</span>
+                        <input type="text" class="player" id="player2" placeholder="Enter your name">
+                    </label>
+                </div>
+                <div class="control-btns">
+                    <button class="new-game-btn btn">NEW GAME</button>
+                    <button class="reset-game-btn btn">RESTART GAME</button>
+                </div>
             </div>
-        </div>
     </main>
+    <script src="index.js"></script>
 </body>
 </html>

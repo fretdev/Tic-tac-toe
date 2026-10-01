@@ -84,22 +84,12 @@ const Game =(player1,player2)=>{
     }
 }
 
-const player1 = Player("Prosper","X")
-const player2 = Player("Mercy","O")
-
-const game = Game(player1,player2)
-
-game.playRound(0)
-game.playRound(1)
-game.playRound(2)
-game.playRound(4)
-game.playRound(3)
-game.playRound(5)
-game.playRound(8)
-game.playRound(6)
-game.playRound(7)
-
-
-
-console.log(game.playRound(0))
-console.log(Gameboard.getBoard())
+const GameController = (()=>{
+    const gameBoardDisplay = document.querySelector('.game-board')
+    const gameBoard = Gameboard.getBoard()
+    gameBoard.forEach((cell,index)=>{
+        const cellElement = document.createElement("div")
+        cellElement.classList.add("cell")
+         gameBoardDisplay.appendChild(cellElement)
+    })
+})()
