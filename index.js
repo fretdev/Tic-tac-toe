@@ -84,12 +84,60 @@ const Game =(player1,player2)=>{
     }
 }
 
-const GameController = (()=>{
-    const gameBoardDisplay = document.querySelector('.game-board')
-    const gameBoard = Gameboard.getBoard()
-    gameBoard.forEach((cell,index)=>{
+const GameDisplayController = (()=>{
+    let game
+    const render = ()=>{
+        const gameBoardDisplay = document.querySelector('.game-board')
+        const gameStatus = document.querySelector('.game-status')
+        gameBoardDisplay.innerHTML=""
+        const gameBoard = Gameboard.getBoard()
+        const currentPlayer = game?.getCurrentPlayer()
+        if(currentPlayer){
+            gameStatus.textContent = `${currentPlayer.name}'s turn`
+        } else{
+            gameStatus.textContent = ""
+        }
+        
+        gameBoard.forEach((cell,index)=>{
         const cellElement = document.createElement("div")
         cellElement.classList.add("cell")
+        cellElement.dataset.index = index
+        cellElement.textContent=cell
+        cellElement.addEventListener("click",()=>{
+            if(!game){
+                return
+            }
+            const moveSuccessful = game.playRound(index)
+            if(moveSuccessful){
+                render()
+            }
+        })
          gameBoardDisplay.appendChild(cellElement)
     })
+    }
+    const startGame = ()=>{
+        const player1Name = document.getElementById("player1").value.trim()
+        const player2Name = document.getElementById("player2").value.trim()
+        
+        if(!player1Name || !player2Name){
+            return
+        }
+        const player1 = Player(player1Name,"X")
+        const player2 = Player(player2Name,"O")
+
+        Gameboard.reset()
+        game = Game(player1,player2)
+        render()
+    }
+    const newGameButton = document.querySelector(".new-game-btn")
+    newGameButton.addEventListener("click",()=>{
+        startGame()
+    })
+    render()
+    return{
+        render,
+        startGame
+    }
 })()
+
+console.log(Gameboard.getBoard())
