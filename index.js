@@ -106,7 +106,7 @@ const GameDisplayController = (()=>{
         } else if(gameResult === "TIE"){
             gameStatus.textContent = "This is a tie"
         } else{
-            gameStatus.textContent = `${currentPlayer.name}
+            gameStatus.textContent = `${currentPlayer.name}'
             s turn`
         }
 
