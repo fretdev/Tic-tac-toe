@@ -35,6 +35,7 @@ const Player = (name,mark)=>{
 const Game =(player1,player2)=>{
     let currentPlayer = player1
     let gameOver = false
+    let gameResult = null
 
     const getCurrentPlayer = ()=>currentPlayer
     const switchPlayer = ()=>{
@@ -67,8 +68,10 @@ const Game =(player1,player2)=>{
         const moveSuccessful = Gameboard.placeMark(index,currentPlayer.mark)
         if(moveSuccessful){
             if(checkWinner()){
+                gameResult = "WIN"
                 gameOver = true
             } else if(checkTie()){
+                gameResult = "TIE"
                 gameOver = true
             }
             else{
@@ -77,9 +80,11 @@ const Game =(player1,player2)=>{
         }
         return moveSuccessful
     }
+    const getGameResult = ()=> gameResult
 
     return{
         getCurrentPlayer,
+        getGameResult,
         playRound
     }
 }
@@ -92,12 +97,19 @@ const GameDisplayController = (()=>{
         gameBoardDisplay.innerHTML=""
         const gameBoard = Gameboard.getBoard()
         const currentPlayer = game?.getCurrentPlayer()
-        if(currentPlayer){
-            gameStatus.textContent = `${currentPlayer.name}'s turn`
-        } else{
+        const gameResult = game?.getGameResult()
+
+        if(!game){
             gameStatus.textContent = ""
+        }else if(gameResult === "WIN"){
+            gameStatus.textContent = `${currentPlayer.name} Won`
+        } else if(gameResult === "TIE"){
+            gameStatus.textContent = "This is a tie"
+        } else{
+            gameStatus.textContent = `${currentPlayer.name}
+            s turn`
         }
-        
+
         gameBoard.forEach((cell,index)=>{
         const cellElement = document.createElement("div")
         cellElement.classList.add("cell")
