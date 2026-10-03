@@ -82,10 +82,18 @@ const Game =(player1,player2)=>{
     }
     const getGameResult = ()=> gameResult
 
+    const reset = ()=>{
+        Gameboard.reset()
+        currentPlayer = player1
+        gameOver = false
+        gameResult = null
+    }
+
     return{
         getCurrentPlayer,
         getGameResult,
-        playRound
+        playRound,
+        reset
     }
 }
 
@@ -106,8 +114,7 @@ const GameDisplayController = (()=>{
         } else if(gameResult === "TIE"){
             gameStatus.textContent = "This is a tie"
         } else{
-            gameStatus.textContent = `${currentPlayer.name}'
-            s turn`
+            gameStatus.textContent = `${currentPlayer.name}'s turn`
         }
 
         gameBoard.forEach((cell,index)=>{
@@ -144,6 +151,14 @@ const GameDisplayController = (()=>{
     const newGameButton = document.querySelector(".new-game-btn")
     newGameButton.addEventListener("click",()=>{
         startGame()
+    })
+    const restartGameButton = document.querySelector(".reset-game-btn")
+    restartGameButton.addEventListener('click',()=>{
+        if(!game){
+            return
+        }
+        game.reset()
+        render()
     })
     render()
     return{
