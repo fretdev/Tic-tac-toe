@@ -15,17 +15,26 @@
         <p class="game-status"></p>
             <div class="game-board"></div>
             <div class="game-controls">
-                <div class="players-inputs">
-                    <label for="player1" class="input-container">
-                        <span class="label-text">Player 1</span>
-                        <input type="text" class="player" id="player1" placeholder="Enter your name">
-                    </label>
-                    <label for="player2" class="input-container">
-                        <span class="label-text">Player 2</span>
-                        <input type="text" class="player" id="player2" placeholder="Enter your name">
-                    </label>
-                </div>
                 <div class="control-btns">
+                    <dialog class="modal">
+                        <div class="modal-contents">
+                            <h2 class="modal-title">GAME SETUP</h2>
+                            <div class="players-inputs">
+                                <label for="player1" class="input-container">
+                                    <span class="label-text">Player 1</span>
+                                    <input type="text" class="player" id="player1" placeholder="Enter your name">
+                                </label>
+                                <label for="player2" class="input-container">
+                                    <span class="label-text">Player 2</span>
+                                    <input type="text" class="player" id="player2" placeholder="Enter your name">
+                                </label>
+                            </div>
+                            <div class="modal-actions">
+                                <button class="close-modal" type="button">CANCEL</button>
+                                <button class="start-game" type="button">START GAME</button>
+                            </div>
+                        </div>
+                    </dialog>
                     <button class="new-game-btn btn">NEW GAME</button>
                     <button class="reset-game-btn btn">RESTART GAME</button>
                 </div>

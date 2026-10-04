@@ -149,18 +149,32 @@ const GameDisplayController = (()=>{
         const player2Name = document.getElementById("player2").value.trim()
         
         if(!player1Name || !player2Name){
-            return
+            return false
         }
         const player1 = Player(player1Name,"X")
         const player2 = Player(player2Name,"O")
 
         Gameboard.reset()
         game = Game(player1,player2)
-        render()
+        return true
     }
+    
     const newGameButton = document.querySelector(".new-game-btn")
+    const modal = document.querySelector('.modal')
+    const closeModalButton = document.querySelector(".close-modal")
     newGameButton.addEventListener("click",()=>{
-        startGame()
+        modal.showModal()
+    })
+    closeModalButton.addEventListener("click",()=>{
+        modal.close()
+    })
+    const startGameButton = document.querySelector('.start-game')
+    startGameButton.addEventListener('click',()=>{
+        const gameStarted = startGame()
+        if(gameStarted){
+            modal.close()
+            render()
+        }
     })
     const restartGameButton = document.querySelector(".reset-game-btn")
     restartGameButton.addEventListener('click',()=>{
