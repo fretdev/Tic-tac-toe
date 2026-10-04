@@ -66,6 +66,7 @@ h1, h2, h3, h4, h5, h6 {
     --input-border: #2d6a4f;
     --input-placeholder: #52796f;
     --input-text: #081c15;
+    --text-muted: #52796f;
 
     --button-bg: #081c15;
     --button-text: #d8f3dc;
@@ -78,7 +79,6 @@ h1, h2, h3, h4, h5, h6 {
 
 body{
     background-color: var(--bg-color);
-    color: white;
     font-family: "Nunito", sans-serif;
     color:  var(--text-primary);
 }
@@ -89,6 +89,20 @@ body{
     padding: 2rem 4rem;
     text-align: center;
     border-radius: 0.5rem;
+}
+.game-status{
+  min-height: 1.8rem;
+  margin: 0.5rem 0 1rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+.game-status.tie{
+  color: var(--text-muted);
+  font-weight: 700;
+}
+.game-status.winner{
+  color: var(--text-secondary);
+  font-weight: 800;
 }
 .game-board {
     background-color: var(--board-bg);

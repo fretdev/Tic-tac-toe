@@ -110,11 +110,17 @@ const GameDisplayController = (()=>{
         if(!game){
             gameStatus.textContent = ""
         }else if(gameResult === "WIN"){
-            gameStatus.textContent = `${currentPlayer.name} Won`
+            gameStatus.textContent = `${currentPlayer.name} Wins!`
+            gameStatus.classList.remove("tie")
+            gameStatus.classList.add("winner")
         } else if(gameResult === "TIE"){
             gameStatus.textContent = "This is a tie"
+            gameStatus.classList.remove("winner")
+            gameStatus.classList.add("tie")
         } else{
             gameStatus.textContent = `${currentPlayer.name}'s turn`
+            gameStatus.classList.remove("winner")
+            gameStatus.classList.remove("tie")
         }
 
         gameBoard.forEach((cell,index)=>{
