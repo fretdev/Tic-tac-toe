@@ -122,8 +122,12 @@ const GameDisplayController = (()=>{
         cellElement.classList.add("cell")
         cellElement.dataset.index = index
         cellElement.textContent=cell
-        cellElement.addEventListener("click",()=>{
+        cellElement.addEventListener("click",()=>{ 
             if(!game){
+                return
+            }
+            const gameResult = game.getGameResult()
+            if(gameResult === "WIN" || gameResult === "TIE"){
                 return
             }
             const moveSuccessful = game.playRound(index)
