@@ -78,15 +78,15 @@ h1, h2, h3, h4, h5, h6 {
 
 
 body{
-    background-color: var(--bg-color);
+    background-color: var(--button-bg);
     font-family: "Nunito", sans-serif;
     color:  var(--text-primary);
 }
 .game-container{
     background: var(--game-container-bg);
-    max-width: 40rem;
-    margin: 1rem auto;
-    padding: 2rem 4rem;
+    width: min(90%,40rem);
+    margin: 4rem auto;
+    padding: 1rem;
     text-align: center;
     border-radius: 0.5rem;
 }
@@ -106,7 +106,7 @@ body{
 }
 .game-board {
     background-color: var(--board-bg);
-    max-width: 30rem;
+    width: min(100%,20rem);
     margin: 1rem auto;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -118,7 +118,7 @@ body{
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 4rem;
+  font-size: clamp(2.5rem,12vw,4rem);
   font-weight: 800;
   cursor: pointer;
   transition: 0.2s ease;
@@ -135,10 +135,10 @@ body{
     gap: 1rem;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
 }
 .input-container {
   position: relative;
-  display: inline-block;
   margin-top: 20px;
 }
 .label-text {
@@ -170,15 +170,19 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: 1rem;
     gap: 1rem;
-    margin-top: 2rem;
+    flex-wrap: wrap;
 }
 
 .btn{
-    border-radius: 0.3rem;
+    font-weight: bold;
+    border-radius: 0.5rem;
+    width: 100%;
+    max-width: 10rem;
+    padding: 0.3rem;
     outline: none;
     border: none;
-    padding: 0.5rem 2rem;
     cursor: pointer;
     background-color: var(--button-bg);
     color: var(--button-text);
