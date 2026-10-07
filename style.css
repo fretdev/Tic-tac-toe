@@ -4,7 +4,9 @@
 }
 
 /* 2. Remove default margin */
-*:not(dialog) {
+*,
+*::before,
+*::after {
   margin: 0;
 }
 
@@ -81,11 +83,15 @@ body{
     background-color: var(--button-bg);
     font-family: "Nunito", sans-serif;
     color:  var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
 }
 .game-container{
     background: var(--game-container-bg);
-    width: min(90%,40rem);
-    margin: 4rem auto;
+    width: min(90%,40rem);margin: 4rem auto;
     padding: 1rem;
     text-align: center;
     border-radius: 0.5rem;
@@ -193,14 +199,15 @@ body{
 }
 
 .modal {
-  margin: auto;
-  background: var(--board-bg);
-  width: min(90vw, 30rem);
-  max-height: 90vh;
-  padding: 1.5rem;
-  border: 5px solid var(--button-bg);
-  border-radius: 10px;
-  overflow-y: auto;
+    margin: auto;
+    background: var(--board-bg);
+    width: min(90vw, 30rem);
+    max-width: calc(100vw - 2rem);
+    max-height: 90vh;
+    padding: 1.5rem;
+    border: 5px solid var(--button-bg);
+    border-radius: 10px;
+    overflow-y: auto;
 }
 .modal::backdrop {
     background: rgb(0 0 0 / 0.6);
