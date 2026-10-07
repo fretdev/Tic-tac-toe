@@ -191,3 +191,23 @@ body{
 .btn:hover {
     background-color: var(--button-hover);
 }
+
+.modal {
+  margin: auto;
+  background: var(--board-bg);
+  width: min(90vw, 30rem);
+  max-height: 90vh;
+  padding: 1.5rem;
+  border: 5px solid var(--button-bg);
+  border-radius: 10px;
+  overflow-y: auto;
+}
+.modal::backdrop {
+    background: rgb(0 0 0 / 0.6);
+}
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
