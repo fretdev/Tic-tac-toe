@@ -74,8 +74,8 @@ h1, h2, h3, h4, h5, h6 {
     --button-text: #d8f3dc;
     --button-hover: #1b4332;
 
-    --player-x: #1b4332;
-    --player-o: #081c15;
+    --player-x: #f4d35e;
+    --player-o: #caf0f8; 
 }
 
 
@@ -87,7 +87,6 @@ body{
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1rem;
 }
 .game-container{
     background: var(--game-container-bg);
@@ -172,6 +171,12 @@ body{
 .player::placeholder{
     color: var(--input-placeholder);
 }
+.player-x{
+  color: var(--player-x);
+}
+.player-o{
+  color: var(--player-o);
+}
 .control-btns{
     display: flex;
     justify-content: center;
@@ -184,9 +189,7 @@ body{
 .btn{
     font-weight: bold;
     border-radius: 0.5rem;
-    width: 100%;
-    max-width: 10rem;
-    padding: 0.3rem;
+    padding: 0.5rem 1rem;
     outline: none;
     border: none;
     cursor: pointer;
@@ -210,20 +213,20 @@ body{
     overflow-y: auto;
 }
 .modal::backdrop {
-    background: rgb(0 0 0 / 0.6);
+    background: rgb(0 0 0 / 0.7);
 }
 .modal-actions {
     display: flex;
     justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
     gap: 1rem;
-    margin-top: 1.5rem;
+    flex-wrap: wrap;
 }
 .modal-btn{
     font-weight: bold;
     border-radius: 0.5rem;
-    width: 30%;
-    max-width: 10rem;
-    padding: 0.3rem;
+    padding: 0.5rem 1.5rem;
     outline: none;
     border: none;
     cursor: pointer;

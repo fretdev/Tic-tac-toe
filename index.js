@@ -128,6 +128,13 @@ const GameDisplayController = (()=>{
         cellElement.classList.add("cell")
         cellElement.dataset.index = index
         cellElement.textContent=cell
+
+        if(cell === "X"){
+            cellElement.classList.add('player-x')
+        }
+        else if(cell === "O"){
+            cellElement.classList.add('player-o')
+        }
         cellElement.addEventListener("click",()=>{ 
             if(!game){
                 return
