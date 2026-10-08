@@ -91,7 +91,7 @@ body{
 }
 .game-container{
     background: var(--game-container-bg);
-    width: min(90%,40rem);margin: 4rem auto;
+    width: min(90%,40rem);
     padding: 1rem;
     text-align: center;
     border-radius: 0.5rem;
@@ -217,4 +217,20 @@ body{
     justify-content: center;
     gap: 1rem;
     margin-top: 1.5rem;
+}
+.modal-btn{
+    font-weight: bold;
+    border-radius: 0.5rem;
+    width: 30%;
+    max-width: 10rem;
+    padding: 0.3rem;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    transition: 0.3s ease;
+}
+.modal-btn:hover {
+    background-color: var(--button-hover);
 }
