@@ -1,237 +1,378 @@
+
 const Gameboard = (() => {
-    let board = ["", "", "", "", "", "", "", "", ""]
+    let board = Array(9).fill("")
 
     const getBoard = () => board
 
     const placeMark = (index, mark) => {
-        if (board[index] === "") {
-            board[index] = mark
-            return true
+        if (!Number.isInteger(index) || index < 0 || index > 8) {
+            return false
         }
-        else return false
-    }
 
-    const reset = () => {
-        board = ["", "", "", "", "", "", "", "", ""]
+        if (board[index] !== "") {
+            return false
+        }
+
+        board[index] = mark
         return true
     }
 
-    return {
-        getBoard,
-        placeMark,
-        reset
+    const reset = () => {
+        board = Array(9).fill("")
     }
+
+    return { getBoard, placeMark, reset }
 })()
 
+const Player = (name, mark, isAI = false) => ({
+    name,
+    mark,
+    isAI
+})
 
-const Player = (name, mark) => {
-    return {
-        name,
-        mark
+const WINNING_COMBINATIONS = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+]
+
+const AI = (() => {
+    const getAvailableMoves = board =>
+        board.reduce((moves, cell, index) => {
+            if (cell === "") moves.push(index)
+            return moves
+        }, [])
+
+    const getWinner = board => {
+        for (const [a, b, c] of WINNING_COMBINATIONS) {
+            if (
+                board[a] !== "" &&
+                board[a] === board[b] &&
+                board[b] === board[c]
+            ) {
+                return board[a]
+            }
+        }
+
+        return null
     }
-}
 
+    const findWinningMove = (board, mark) => {
+        for (const index of getAvailableMoves(board)) {
+            board[index] = mark
+            const wins = getWinner(board) === mark
+            board[index] = ""
 
-const Game = (player1, player2) => {
+            if (wins) return index
+        }
+
+        return null
+    }
+
+    const randomMove = board => {
+        const moves = getAvailableMoves(board)
+
+        if (moves.length === 0) return null
+
+        return moves[Math.floor(Math.random() * moves.length)]
+    }
+
+    const chooseEasyMove = board => randomMove(board)
+
+    const chooseMediumMove = board => {
+        const winningMove = findWinningMove(board, "O")
+        if (winningMove !== null) return winningMove
+
+        const blockingMove = findWinningMove(board, "X")
+        if (blockingMove !== null) return blockingMove
+
+        if (board[4] === "") return 4
+
+        const corners = [0, 2, 6, 8].filter(
+            index => board[index] === ""
+        )
+
+        if (corners.length > 0) {
+            return corners[Math.floor(Math.random() * corners.length)]
+        }
+
+        return randomMove(board)
+    }
+
+    const minimax = (board, isMaximizing, depth) => {
+        const winner = getWinner(board)
+
+        if (winner === "O") return 10 - depth
+        if (winner === "X") return depth - 10
+
+        const moves = getAvailableMoves(board)
+        if (moves.length === 0) return 0
+
+        if (isMaximizing) {
+            let bestScore = -Infinity
+
+            for (const index of moves) {
+                board[index] = "O"
+                const score = minimax(board, false, depth + 1)
+                board[index] = ""
+                bestScore = Math.max(bestScore, score)
+            }
+
+            return bestScore
+        }
+
+        let bestScore = Infinity
+
+        for (const index of moves) {
+            board[index] = "X"
+            const score = minimax(board, true, depth + 1)
+            board[index] = ""
+            bestScore = Math.min(bestScore, score)
+        }
+
+        return bestScore
+    }
+
+    const chooseHardMove = board => {
+        const moves = getAvailableMoves(board)
+        let bestMove = null
+        let bestScore = -Infinity
+
+        for (const index of moves) {
+            board[index] = "O"
+            const score = minimax(board, false, 0)
+            board[index] = ""
+
+            if (score > bestScore) {
+                bestScore = score
+                bestMove = index
+            }
+        }
+
+        return bestMove
+    }
+
+    const chooseMove = (board, difficulty) => {
+        const simulatedBoard = [...board]
+
+        if (difficulty === "easy") {
+            return chooseEasyMove(simulatedBoard)
+        }
+
+        if (difficulty === "medium") {
+            return chooseMediumMove(simulatedBoard)
+        }
+
+        return chooseHardMove(simulatedBoard)
+    }
+
+    return { chooseMove }
+})()
+
+const Game = (player1, player2, mode, difficulty) => {
     let currentPlayer = player1
     let gameOver = false
     let gameResult = null
+    let winner = null
 
     const getCurrentPlayer = () => currentPlayer
+    const getGameResult = () => gameResult
+    const getWinner = () => winner
+
     const switchPlayer = () => {
         currentPlayer = currentPlayer === player1 ? player2 : player1
     }
 
-    const winningCombinations = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
-
-    const checkWinner = () => {
-        const board = Gameboard.getBoard()
-
-        return winningCombinations.some(combination => {
-            return (
-                board[combination[0]] === currentPlayer.mark &&
-                board[combination[1]] === currentPlayer.mark &&
-                board[combination[2]] === currentPlayer.mark
+    const checkWinner = mark =>
+        WINNING_COMBINATIONS.some(combination =>
+            combination.every(
+                index => Gameboard.getBoard()[index] === mark
             )
-        })
+        )
+
+    const checkTie = () =>
+        Gameboard.getBoard().every(cell => cell !== "")
+
+    const finishTurn = player => {
+        if (checkWinner(player.mark)) {
+            winner = player
+            gameResult = "WIN"
+            gameOver = true
+            return true
+        }
+
+        if (checkTie()) {
+            gameResult = "TIE"
+            gameOver = true
+            return true
+        }
+
+        return false
     }
 
-    const checkTie = () => {
-        const board = Gameboard.getBoard()
-        return !board.some(cell => cell === "")
-    }
+    const playRound = index => {
+        if (gameOver) return false
 
-    const playRound = (index) => {
-        if (gameOver) {
+        const player = currentPlayer
+
+        if (!Gameboard.placeMark(index, player.mark)) {
             return false
         }
-        const moveSuccessful = Gameboard.placeMark(index, currentPlayer.mark)
-        if (moveSuccessful) {
-            if (checkWinner()) {
-                gameResult = "WIN"
-                gameOver = true
-            } else if (checkTie()) {
-                gameResult = "TIE"
-                gameOver = true
+
+        if (finishTurn(player)) return true
+
+        if (mode === "ai") {
+            currentPlayer = player2
+
+            const aiIndex = AI.chooseMove(
+                Gameboard.getBoard(),
+                difficulty
+            )
+
+            if (aiIndex !== null) {
+                Gameboard.placeMark(aiIndex, player2.mark)
+                finishTurn(player2)
             }
-            else {
-                switchPlayer()
-                Gameboard.placeMark(AI(),currentPlayer.mark)
-                if(checkWinner()){
-                    gameResult = "WIN"
-                    gameOver = true
-                }else if(checkTie()){
-                    gameResult = "TIE"
-                    gameOver = true
-                }else{
-                    switchPlayer()
-                }
-            }
+
+            if (!gameOver) currentPlayer = player1
+        } else {
+            switchPlayer()
         }
-        return moveSuccessful
+
+        return true
     }
-    const getGameResult = () => gameResult
 
     const reset = () => {
         Gameboard.reset()
         currentPlayer = player1
         gameOver = false
         gameResult = null
+        winner = null
     }
 
     return {
         getCurrentPlayer,
         getGameResult,
+        getWinner,
         playRound,
-        reset,
-        getWinningCombinations: ()=>winningCombinations
+        reset
     }
 }
 
 const GameDisplayController = (() => {
     let game
+
+    const gameBoardDisplay = document.querySelector(".game-board")
+    const gameStatus = document.querySelector(".game-status")
+    const modal = document.querySelector(".modal")
+
     const render = () => {
-        const gameBoardDisplay = document.querySelector('.game-board')
-        const gameStatus = document.querySelector('.game-status')
         gameBoardDisplay.innerHTML = ""
-        const gameBoard = Gameboard.getBoard()
-        const currentPlayer = game?.getCurrentPlayer()
-        const gameResult = game?.getGameResult()
+
+        const board = Gameboard.getBoard()
 
         if (!game) {
             gameStatus.textContent = ""
-        } else if (gameResult === "WIN") {
-            gameStatus.textContent = `${currentPlayer.name} Wins!`
+        } else if (game.getGameResult() === "WIN") {
+            gameStatus.textContent = `${game.getWinner().name} Wins!`
             gameStatus.classList.remove("tie")
             gameStatus.classList.add("winner")
-        } else if (gameResult === "TIE") {
+        } else if (game.getGameResult() === "TIE") {
             gameStatus.textContent = "This is a tie"
             gameStatus.classList.remove("winner")
             gameStatus.classList.add("tie")
         } else {
-            gameStatus.textContent = `${currentPlayer.name}'s turn`
-            gameStatus.classList.remove("winner")
-            gameStatus.classList.remove("tie")
+            gameStatus.textContent =
+                `${game.getCurrentPlayer().name}'s turn`
+            gameStatus.classList.remove("winner", "tie")
         }
 
-        gameBoard.forEach((cell, index) => {
+        board.forEach((cell, index) => {
             const cellElement = document.createElement("div")
             cellElement.classList.add("cell")
             cellElement.dataset.index = index
             cellElement.textContent = cell
 
-            if (cell === "X") {
-                cellElement.classList.add('player-x')
-            }
-            else if (cell === "O") {
-                cellElement.classList.add('player-o')
-            }
+            if (cell === "X") cellElement.classList.add("player-x")
+            if (cell === "O") cellElement.classList.add("player-o")
+
             cellElement.addEventListener("click", () => {
-                if (!game) {
-                    return
-                }
-                const gameResult = game.getGameResult()
-                if (gameResult === "WIN" || gameResult === "TIE") {
-                    return
-                }
-                const moveSuccessful = game.playRound(index)
-                if (moveSuccessful) {
+                if (!game || game.getGameResult()) return
+
+                if (game.playRound(index)) {
                     render()
                 }
             })
+
             gameBoardDisplay.appendChild(cellElement)
         })
     }
-    const startGame = () => {
-        const player1Name = document.getElementById("player1").value.trim()
-        const player2Name = document.getElementById("player2").value.trim()
 
-        if (!player1Name || !player2Name) {
+    const updateSetupFields = () => {
+        const mode = document.querySelector("#gameMode").value
+
+        document.querySelector("#player2Field").hidden = mode === "ai"
+        document.querySelector("#aiDifficultyField").hidden = mode !== "ai"
+    }
+
+    const startGame = () => {
+        const mode = document.querySelector("#gameMode").value
+        const player1Name = document.querySelector("#player1").value.trim()
+        const player2Name = document.querySelector("#player2").value.trim()
+        const difficulty = document.querySelector("#difficulty").value
+
+        if (!player1Name) {
+            document.querySelector("#player1").focus()
             return false
         }
+
+        if (mode === "human" && !player2Name) {
+            document.querySelector("#player2").focus()
+            return false
+        }
+
         const player1 = Player(player1Name, "X")
-        const player2 = Player(player2Name, "O")
+        const player2 = mode === "ai"
+            ? Player("AI", "O", true)
+            : Player(player2Name, "O")
 
         Gameboard.reset()
-        game = Game(player1, player2)
+        game = Game(player1, player2, mode, difficulty)
+
         return true
     }
 
-    const newGameButton = document.querySelector(".new-game-btn")
-    const modal = document.querySelector('.modal')
-    const closeModalButton = document.querySelector(".close-modal")
-    newGameButton.addEventListener("click", () => {
+    document.querySelector(".new-game-btn").addEventListener("click", () => {
         modal.showModal()
     })
-    closeModalButton.addEventListener("click", () => {
+
+    document.querySelector(".close-modal").addEventListener("click", () => {
         modal.close()
     })
-    const startGameButton = document.querySelector('.start-game')
-    startGameButton.addEventListener('click', () => {
-        const gameStarted = startGame()
-        if (gameStarted) {
+
+    document.querySelector("#gameMode").addEventListener("change", updateSetupFields)
+
+    document.querySelector(".start-game").addEventListener("click", () => {
+        if (startGame()) {
             modal.close()
             render()
         }
     })
-    const restartGameButton = document.querySelector(".reset-game-btn")
-    restartGameButton.addEventListener('click', () => {
-        if (!game) {
-            return
-        }
+
+    document.querySelector(".reset-game-btn").addEventListener("click", () => {
+        if (!game) return
+
         game.reset()
         render()
     })
+
+    updateSetupFields()
     render()
-    return {
-        render,
-        startGame,
-        getGame: ()=>game
-    }
+
+    return { render, startGame }
 })()
-
-
-const AI = ()=>{
-    const board = Gameboard.getBoard()
-    const winningCombinations = GameDisplayController.getGame().getWinningCombinations()
-    const emptyCellsIndices = board.reduce((acc,current,index)=>{
-        if(current === ""){
-            acc.push(index)
-        }
-        return acc
-    },[])
-    if(emptyCellsIndices.length === 0) return null
-    for (const combination of winningCombinations) {
-    const values = combination.map(index => board[index])
-    const xCount = values.filter(value => value === "X").length
-    const emptyCount = values.filter(value => value === "").length
-
-    if (xCount === 2 && emptyCount === 1) {
-        return combination[values.indexOf("")]
-    }
-}
-const randomIndex = Math.floor(Math.random() * emptyCellsIndices.length)
-return emptyCellsIndices[randomIndex]
-}
-
-console.log(Gameboard.getBoard())

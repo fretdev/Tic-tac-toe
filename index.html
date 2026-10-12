@@ -1,45 +1,115 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TIC TAC TOE</title>
+    <meta name="theme-color" content="#081c15">
+    <title>Tic-Tac-Toe | FretDev</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script src="index.js" defer></script>
 </head>
 <body>
     <main class="game-container">
-        <h1 class="game-title">TIC TAC TOE</h1>
-        <p class="game-status"></p>
-            <div class="game-board"></div>
+        <header class="game-header">
+            <p class="eyebrow">THE CLASSIC GAME</p>
+            <h1 class="game-title">Tic-Tac-Toe<span>.</span></h1>
+            <p class="game-subtitle">A little strategy goes a long way.</p>
+        </header>
+
+        <section class="game-panel" aria-label="Tic-Tac-Toe game">
+            <div class="game-info">
+                <p class="game-status" aria-live="polite">Start a new game to play.</p>
+            </div>
+
+            <div class="game-board" role="group" aria-label="Game board"></div>
+
             <div class="game-controls">
-                <div class="control-btns">
-                    <dialog class="modal">
-                        <div class="modal-contents">
-                            <h2 class="modal-title">GAME SETUP</h2>
-                            <div class="players-inputs">
-                                <label for="player1" class="input-container">
-                                    <span class="label-text">Player 1</span>
-                                    <input type="text" class="player" id="player1" placeholder="Enter your name">
-                                </label>
-                                <label for="player2" class="input-container">
-                                    <span class="label-text">Player 2</span>
-                                    <input type="text" class="player" id="player2" placeholder="Enter your name">
-                                </label>
-                            </div>
-                            <div class="modal-actions">
-                                <button class="close-modal modal-btn" type="button">CANCEL</button>
-                                <button class="start-game modal-btn" type="button">START GAME</button>
-                            </div>
-                        </div>
-                    </dialog>
-                    <button class="new-game-btn btn">NEW GAME</button>
-                    <button class="reset-game-btn btn">RESTART GAME</button>
+                <button class="btn btn-primary new-game-btn" type="button">
+                    New game
+                </button>
+                <button class="btn btn-secondary reset-game-btn" type="button">
+                    Restart
+                </button>
+            </div>
+        </section>
+
+        <footer class="game-footer">
+            <span>Think ahead. Play smart.</span>
+        </footer>
+    </main>
+
+    <dialog class="modal" aria-labelledby="modalTitle">
+        <form class="modal-contents" method="dialog" onsubmit="return false">
+            <div class="modal-header">
+                <p class="eyebrow">LET'S PLAY</p>
+                <h2 class="modal-title" id="modalTitle">Game setup</h2>
+                <p class="modal-description">Choose your opponent and get ready to play.</p>
+            </div>
+
+            <div class="setup-fields">
+                <label class="setup-field" for="gameMode">
+                    <span>Game mode</span>
+                    <select id="gameMode">
+                        <option value="ai">Play against AI</option>
+                        <option value="human">Two players</option>
+                    </select>
+                </label>
+
+                <label class="setup-field" for="player1">
+                    <span>Your name</span>
+                    <input
+                        type="text"
+                        id="player1"
+                        placeholder="Enter your name"
+                        maxlength="30"
+                        autocomplete="given-name"
+                        required
+                    >
+                    <small>You will play as X.</small>
+                </label>
+
+                <div id="player2Field" hidden>
+                    <label class="setup-field" for="player2">
+                        <span>Player 2 name</span>
+                        <input
+                            type="text"
+                            id="player2"
+                            placeholder="Enter player 2's name"
+                            maxlength="30"
+                            autocomplete="off"
+                        >
+                        <small>Player 2 will play as O.</small>
+                    </label>
+                </div>
+
+                <div id="aiDifficultyField">
+                    <label class="setup-field" for="difficulty">
+                        <span>AI difficulty</span>
+                        <select id="difficulty">
+                            <option value="easy">Easy — Random moves</option>
+                            <option value="medium" selected>Medium — Tactical moves</option>
+                            <option value="hard">Hard — Minimax</option>
+                        </select>
+                    </label>
+                    <p class="field-hint">
+                        Hard mode looks ahead to choose its best move.
+                    </p>
                 </div>
             </div>
-    </main>
-    <script src="index.js"></script>
+
+            <div class="modal-actions">
+                <button class="btn btn-secondary close-modal" type="button">
+                    Cancel
+                </button>
+                <button class="btn btn-primary start-game" type="button">
+                    Start game
+                </button>
+            </div>
+        </form>
+    </dialog>
 </body>
 </html>

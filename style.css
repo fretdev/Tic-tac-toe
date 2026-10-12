@@ -1,61 +1,20 @@
-/* 1. Use a more-intuitive box-sizing model */
-*, *::before, *::after {
-  box-sizing: border-box;
-}
 
-/* 2. Remove default margin */
-*,
-*::before,
+*, 
+*::before, 
 *::after {
-  margin: 0;
+    box-sizing: border-box;
+    margin: 0;
 }
 
-/* 3. Enable keyword animations */
 @media (prefers-reduced-motion: no-preference) {
-  html {
-    interpolate-size: allow-keywords;
-  }
-}
-
-body {
-  /* 4. Increase line-height */
-  line-height: 1.5;
-  /* 5. Improve text rendering */
-  -webkit-font-smoothing: antialiased;
-}
-
-/* 6. Improve media defaults */
-img, picture, video, canvas, svg {
-  display: block;
-  max-width: 100%;
-}
-
-/* 7. Inherit fonts for form controls */
-input, button, textarea, select {
-  font: inherit;
-}
-
-/* 8. Avoid text overflows */
-p, h1, h2, h3, h4, h5, h6 {
-  overflow-wrap: break-word;
-}
-
-/* 9. Improve line wrapping */
-p {
-  text-wrap: pretty;
-}
-h1, h2, h3, h4, h5, h6 {
-  text-wrap: balance;
-}
-
-/*
-  10. Create a root stacking context
-*/
-#root, #__next {
-  isolation: isolate;
+    html {
+        interpolate-size: allow-keywords;
+    }
 }
 
 :root {
+    color-scheme: light;
+
     --bg-color: #d8f3dc;
     --game-container-bg: #52b788;
     --board-bg: #95d5b2;
@@ -63,177 +22,482 @@ h1, h2, h3, h4, h5, h6 {
 
     --text-primary: #081c15;
     --text-secondary: #1b4332;
+    --text-muted: #52796f;
 
     --input-bg: #f1faee;
     --input-border: #2d6a4f;
     --input-placeholder: #52796f;
     --input-text: #081c15;
-    --text-muted: #52796f;
 
     --button-bg: #081c15;
     --button-text: #d8f3dc;
     --button-hover: #1b4332;
 
     --player-x: #f4d35e;
-    --player-o: #caf0f8; 
+    --player-o: #caf0f8;
+
+    --radius-sm: 0.4rem;
+    --radius-md: 0.65rem;
+    --radius-lg: 1rem;
+
+    --shadow: 0 1rem 3rem rgb(0 0 0 / 20%);
 }
 
-
-body{
-    background-color: var(--button-bg);
+html {
+    min-width: 320px;
+    min-height: 100%;
     font-family: "Nunito", sans-serif;
-    color:  var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+body {
     min-height: 100vh;
+    min-height: 100dvh;
+    padding: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    line-height: 1.5;
+    background-color: var(--button-bg);
+    color: var(--text-primary);
 }
-.game-container{
-    background: var(--game-container-bg);
-    width: min(90%,40rem);
-    padding: 1rem;
+
+img,
+picture,
+video,
+canvas,
+svg {
+    display: block;
+    max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+    font: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    overflow-wrap: break-word;
+}
+
+p {
+    text-wrap: pretty;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    text-wrap: balance;
+}
+
+button {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+    outline: 3px solid #40916c;
+    outline-offset: 3px;
+}
+
+.game-container {
+    width: min(100%, 40rem);
+    min-width: 0;
+    padding: clamp(1rem, 3vw, 1.75rem);
     text-align: center;
-    border-radius: 0.5rem;
+    background: var(--game-container-bg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
 }
-.game-status{
-  min-height: 1.8rem;
-  margin: 0.5rem 0 1rem;
-  font-size: 1.2rem;
-  font-weight: 700;
+
+.game-header {
+    margin-bottom: 1rem;
 }
-.game-status.tie{
-  color: var(--text-muted);
-  font-weight: 700;
+
+.game-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1.15;
+    font-weight: 800;
 }
-.game-status.winner{
-  color: var(--text-secondary);
-  font-weight: 800;
+
+.game-subtitle {
+    margin-top: 0.35rem;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
 }
+
+.game-status {
+    min-height: 1.8rem;
+    margin: 0.5rem 0 1rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.game-status.tie {
+    color: var(--text-muted);
+}
+
+.game-status.winner {
+    color: var(--text-secondary);
+    font-weight: 800;
+}
+
 .game-board {
-    background-color: var(--board-bg);
-    width: min(100%,20rem);
+    width: min(100%, 20rem);
     margin: 1rem auto;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.3rem;
+    background-color: var(--board-bg);
 }
-.cell{
-  aspect-ratio: 1;
-  background-color: var(--cell-bg);
-  border: 2px solid var(--board-bg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: clamp(2.5rem,12vw,4rem);
-  font-weight: 800;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-.cell:hover{
-  background-color: var(--text-secondary);
-}
-.game-controls{
+
+.cell {
+    min-width: 0;
+    aspect-ratio: 1;
     display: flex;
-    flex-direction: column;
-}
-.players-inputs{
-    display: flex;
-    gap: 1rem;
     align-items: center;
     justify-content: center;
-    flex-wrap: wrap;
+    background-color: var(--cell-bg);
+    border: 2px solid var(--board-bg);
+    border-radius: var(--radius-sm);
+    font-size: clamp(2.5rem, 12vw, 4rem);
+    font-weight: 800;
+    line-height: 1;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
-.input-container {
-  position: relative;
-  margin-top: 20px;
+
+.cell:hover {
+    background-color: var(--text-secondary);
 }
-.label-text {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: white;
-  padding: 0 4px;
-  color: #666;
-  font-size: 14px;
-  pointer-events: none;
-  transition: all 0.2s ease;
+
+.cell:active {
+    transform: scale(0.97);
 }
-.player {
-  padding: 12px 12px 12px 70px; 
-  font-size: 16px;
-  border: 2px solid var(--input-border);
-  border-radius: 4px;
-  outline: none;
-  cursor: pointer;
-  background-color: var(--input-bg);
-  color: var(--input-text);
+
+.cell.player-x {
+    color: var(--player-x);
 }
-.player::placeholder{
-    color: var(--input-placeholder);
+
+.cell.player-o {
+    color: var(--player-o);
 }
-.player-x{
-  color: var(--player-x);
-}
-.player-o{
-  color: var(--player-o);
-}
-.control-btns{
+
+.game-controls,
+.control-btns {
     display: flex;
-    justify-content: center;
     align-items: center;
-    margin-top: 1rem;
-    gap: 1rem;
+    justify-content: center;
+    gap: 0.75rem;
     flex-wrap: wrap;
 }
 
-.btn{
-    font-weight: bold;
-    border-radius: 0.5rem;
-    padding: 0.5rem 1rem;
-    outline: none;
-    border: none;
-    cursor: pointer;
-    background-color: var(--button-bg);
-    color: var(--button-text);
-    transition: 0.3s ease;
-}
-.btn:hover {
-    background-color: var(--button-hover);
+.game-controls {
+    flex-direction: row;
 }
 
-.modal {
-    margin: auto;
-    background: var(--board-bg);
-    width: min(90vw, 30rem);
-    max-width: calc(100vw - 2rem);
-    max-height: 90vh;
-    padding: 1.5rem;
-    border: 5px solid var(--button-bg);
-    border-radius: 10px;
-    overflow-y: auto;
-}
-.modal::backdrop {
-    background: rgb(0 0 0 / 0.7);
-}
-.modal-actions {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 1rem;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-.modal-btn{
-    font-weight: bold;
-    border-radius: 0.5rem;
-    padding: 0.5rem 1.5rem;
-    outline: none;
-    border: none;
-    cursor: pointer;
+.btn,
+.modal-btn {
+    min-height: 2.75rem;
+    padding: 0.65rem 1.25rem;
+    border: 0;
+    border-radius: var(--radius-md);
     background-color: var(--button-bg);
     color: var(--button-text);
-    transition: 0.3s ease;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
+
+.btn:hover,
 .modal-btn:hover {
     background-color: var(--button-hover);
+}
+
+.btn:active,
+.modal-btn:active {
+    transform: translateY(1px);
+}
+
+.players-inputs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.input-container {
+    position: relative;
+    margin-top: 1.25rem;
+}
+
+.label-text {
+    position: absolute;
+    top: 50%;
+    left: 0.75rem;
+    transform: translateY(-50%);
+    padding: 0 0.25rem;
+    background-color: var(--input-bg);
+    color: var(--input-placeholder);
+    font-size: 0.875rem;
+    pointer-events: none;
+    transition: all 0.2s ease;
+}
+
+.player {
+    width: 100%;
+    min-width: 0;
+    padding: 0.75rem;
+    border: 2px solid var(--input-border);
+    border-radius: var(--radius-sm);
+    background-color: var(--input-bg);
+    color: var(--input-text);
+}
+
+.player::placeholder {
+    color: var(--input-placeholder);
+}
+
+.player-x {
+    color: var(--player-x);
+}
+
+.player-o {
+    color: var(--player-o);
+}
+
+/* Game setup modal */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: min(30rem, calc(100% - 2rem));
+    max-width: none;
+    max-height: calc(100% - 2rem);
+    padding: clamp(1rem, 4vw, 1.75rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border: 3px solid var(--button-bg);
+    border-radius: var(--radius-lg);
+    background: var(--bg-color);
+    color: var(--text-primary);
+    box-shadow: var(--shadow);
+}
+
+.modal::backdrop {
+    background: rgb(0 0 0 / 70%);
+    backdrop-filter: blur(3px);
+}
+
+.modal-contents {
+    display: grid;
+    gap: 1.25rem;
+}
+
+.modal-header {
+    text-align: center;
+}
+
+.eyebrow {
+    margin-bottom: 0.3rem;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.modal-title {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    line-height: 1.2;
+    font-weight: 800;
+}
+
+.modal-description {
+    margin-top: 0.4rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.setup-fields {
+    display: grid;
+    gap: 1rem;
+    text-align: left;
+}
+
+.setup-field {
+    display: grid;
+    gap: 0.4rem;
+    min-width: 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 800;
+}
+
+.setup-field input,
+.setup-field select {
+    width: 100%;
+    min-width: 0;
+    min-height: 2.9rem;
+    padding: 0.65rem 0.75rem;
+    border: 2px solid var(--input-border);
+    border-radius: var(--radius-sm);
+    background: var(--input-bg);
+    color: var(--input-text);
+}
+
+.setup-field input::placeholder {
+    color: var(--input-placeholder);
+    opacity: 1;
+}
+
+.setup-field small,
+.field-hint {
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.field-hint {
+    margin-top: 0.4rem;
+}
+
+#player2Field[hidden],
+#aiDifficultyField[hidden] {
+    display: none;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 0.25rem;
+}
+
+.modal-actions .btn {
+    flex: 1 1 7rem;
+}
+
+/* Smaller screens */
+
+@media (max-width: 480px) {
+    body {
+        padding: 0.6rem;
+    }
+
+    .game-container {
+        padding: 0.9rem;
+        border-radius: var(--radius-md);
+    }
+
+    .game-header {
+        margin-bottom: 0.65rem;
+    }
+
+    .game-subtitle {
+        font-size: 0.85rem;
+    }
+
+    .game-status {
+        margin: 0.4rem 0 0.65rem;
+        font-size: 1rem;
+    }
+
+    .game-board {
+        width: min(100%, 18rem);
+        margin: 0.65rem auto 0.9rem;
+    }
+
+    .game-controls {
+        gap: 0.5rem;
+    }
+
+    .game-controls .btn {
+        flex: 1 1 7rem;
+        padding-inline: 0.6rem;
+    }
+
+    .modal-actions .btn {
+        flex: 1 1 6rem;
+    }
+}
+
+/* Short screens */
+
+@media (max-height: 650px) {
+    body {
+        padding-block: 0.5rem;
+    }
+
+    .game-container {
+        padding-block: 0.75rem;
+    }
+
+    .game-header {
+        margin-bottom: 0.5rem;
+    }
+
+    .game-title {
+        font-size: clamp(1.6rem, 5vh, 2.4rem);
+    }
+
+    .game-subtitle {
+        margin-top: 0.2rem;
+    }
+
+    .game-status {
+        margin: 0.25rem 0 0.5rem;
+        font-size: 1rem;
+    }
+
+    .game-board {
+        width: min(100%, 15rem);
+        margin-block: 0.5rem 0.65rem;
+    }
+
+    .game-footer {
+        margin-top: 0.5rem;
+    }
+
+    .modal {
+        padding-block: 1rem;
+    }
+
+    .modal-contents {
+        gap: 0.85rem;
+    }
+
+    .setup-fields {
+        gap: 0.75rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
 }
