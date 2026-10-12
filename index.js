@@ -76,6 +76,16 @@ const Game = (player1, player2) => {
             }
             else {
                 switchPlayer()
+                Gameboard.placeMark(AI(),currentPlayer.mark)
+                if(checkWinner()){
+                    gameResult = "WIN"
+                    gameOver = true
+                }else if(checkTie()){
+                    gameResult = "TIE"
+                    gameOver = true
+                }else{
+                    switchPlayer()
+                }
             }
         }
         return moveSuccessful
@@ -93,7 +103,8 @@ const Game = (player1, player2) => {
         getCurrentPlayer,
         getGameResult,
         playRound,
-        reset
+        reset,
+        getWinningCombinations: ()=>winningCombinations
     }
 }
 
@@ -194,13 +205,15 @@ const GameDisplayController = (() => {
     render()
     return {
         render,
-        startGame
+        startGame,
+        getGame: ()=>game
     }
 })()
 
 
 const AI = ()=>{
     const board = Gameboard.getBoard()
+    const winningCombinations = GameDisplayController.getGame().getWinningCombinations()
     const emptyCellsIndices = board.reduce((acc,current,index)=>{
         if(current === ""){
             acc.push(index)
@@ -208,9 +221,17 @@ const AI = ()=>{
         return acc
     },[])
     if(emptyCellsIndices.length === 0) return null
-    const randomIndex = Math.floor(Math.random()* emptyCellsIndices.length)
-    const choice = emptyCellsIndices[randomIndex]
-    return choice
+    for (const combination of winningCombinations) {
+    const values = combination.map(index => board[index])
+    const xCount = values.filter(value => value === "X").length
+    const emptyCount = values.filter(value => value === "").length
+
+    if (xCount === 2 && emptyCount === 1) {
+        return combination[values.indexOf("")]
+    }
+}
+const randomIndex = Math.floor(Math.random() * emptyCellsIndices.length)
+return emptyCellsIndices[randomIndex]
 }
 
 console.log(Gameboard.getBoard())
